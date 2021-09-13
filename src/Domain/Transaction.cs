@@ -15,8 +15,19 @@ namespace Domain
         #region Constructors
         public Transaction(decimal amount, TransactionType type)
         {
+            if (amount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than zero");
+
+            DateOfTrans = DateTime.Today;
             Amount = amount;
             TransactionType = type;
+        }
+        #endregion
+
+        #region Methods
+        public override string ToString()
+        {
+            return $"Transaction: {DateOfTrans} - {Amount} - {TransactionType}";
         }
         #endregion
     }
