@@ -1,4 +1,6 @@
-﻿namespace Domain
+﻿using System;
+
+namespace Domain
 {
     public class SavingsAccount : BankAccount
     {
@@ -26,8 +28,11 @@
 
         public override void Withdraw(decimal amount)
         {
-            Withdraw(amount);
-            Withdraw(WithdrawCost);
+            if (Balance - amount - WithdrawCost < 0)
+                throw new InvalidOperationException("Not sufficient funds for this withdrawal");
+
+            base.Withdraw(amount);
+            base.Withdraw(WithdrawCost);
         }
         #endregion
     }

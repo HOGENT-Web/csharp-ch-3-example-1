@@ -1,18 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Domain
 {
     public class BankAccount : IBankAccount
     {
         #region Fields
+        private string _accountNumber;
         private readonly IList<Transaction> _transactions;
         #endregion
 
+        #region Delegates
+        public delegate void OnTransactionAdded(string accountNumber, Transaction transaction);
+        #endregion
+
         #region Properties
-        public string AccountNumber { get; }
+        public string AccountNumber {
+            get
+            {
+                return _accountNumber;
+            }
+            private set
+            {
+                Regex regex = new Regex(@"^(?<bankcode>\d{3})-(?<rekeningnr>\d{7})-(?<checksum>\d{2})$");
+                Match match = regex.Match(value);
+                if (!match.Success)
+                    throw new ArgumentException("Bankaccount number format is not correct", nameof(AccountNumber));
+                int getal = int.Parse(match.Groups["bankcode"].Value + match.Groups["rekeningnr"].Value);
+                int checksum = int.Parse(match.Groups["checksum"].Value);
+                if (getal % 97 != checksum)
+                    throw new ArgumentException("97 test of the bankaccount number failed", nameof(AccountNumber));
+                _accountNumber = value;
+            }
+        }
         public decimal Balance { get; private set; }
         public int NumberOfTransactions => _transactions.Count;
+        public OnTransactionAdded TransactionAdded { get; set; }
         #endregion
 
         #region Constructors
@@ -25,15 +49,20 @@ namespace Domain
         #endregion
 
         #region Methods
+        private void AddTransaction(Transaction transaction)
+        {
+            _transactions.Add(transaction);
+            TransactionAdded?.Invoke(this.AccountNumber, transaction);
+        }
         public void Deposit(decimal amount)
         {
-            _transactions.Add(new Transaction(amount, TransactionType.Deposit));
+            AddTransaction(new Transaction(amount, TransactionType.Deposit));
             Balance += amount;
         }
 
         public virtual void Withdraw(decimal amount)
         {
-            _transactions.Add(new Transaction(amount, TransactionType.Withdraw));
+            AddTransaction(new Transaction(amount, TransactionType.Withdraw));
             Balance -= amount;
         }
 
