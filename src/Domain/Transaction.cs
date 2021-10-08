@@ -1,34 +1,32 @@
-﻿using System;
+﻿using Ardalis.GuardClauses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Domain
 {
-    public class Transaction
+    public class Transaction : ValueObject
     {
-        #region Properties
-        public decimal Amount { get; }
+        public Money Amount { get; }
         public DateTime DateOfTrans { get; }
         public bool IsDeposit => TransactionType == TransactionType.Deposit;
         public bool IsWithdraw => TransactionType == TransactionType.Withdraw;
         public TransactionType TransactionType { get; }
-        #endregion
 
-        #region Constructors
-        public Transaction(decimal amount, TransactionType type)
+        public Transaction(Money amount, TransactionType type)
         {
-            if (amount <= 0)
-                throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than zero");
-
-            DateOfTrans = DateTime.Today;
-            Amount = amount;
+            Amount = Guard.Against.Null(amount, nameof(amount));
+            DateOfTrans = DateTime.UtcNow;
             TransactionType = type;
         }
-        #endregion
 
-        #region Methods
-        public override string ToString()
+        protected override IEnumerable<object> GetEqualityComponents()
         {
-            return $"Transaction: {DateOfTrans} - {Amount} - {TransactionType}";
+            yield return Amount;
+            yield return DateOfTrans.Date;
+            yield return TransactionType;
         }
-        #endregion
     }
 }
