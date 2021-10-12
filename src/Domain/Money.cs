@@ -9,12 +9,14 @@ namespace Domain
         public decimal Value { get; }
         public Money(decimal value)
         {
-            Value = Guard.Against.NegativeOrZero(value, nameof(value));
+            Value = Guard.Against.Negative(value, nameof(value));
         }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Math.Round(Value, 2);
         }
+
+        public override string ToString() => $"{Value:C}";
     }
 }
