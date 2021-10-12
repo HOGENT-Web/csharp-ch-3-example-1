@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Domain
 {
 
-    public class BankAccount
+    public class BankAccount : IBankAccount
     {
         private ICollection<Transaction> _transactions = new List<Transaction>();
         
