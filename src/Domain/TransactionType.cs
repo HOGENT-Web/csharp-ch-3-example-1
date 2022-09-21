@@ -1,8 +1,7 @@
-﻿namespace Domain
+﻿namespace Domain;
+
+public enum TransactionType
 {
-    public enum TransactionType
-    {
-        Deposit,
-        Withdraw
-    }
+    Deposit,
+    Withdraw
 }
