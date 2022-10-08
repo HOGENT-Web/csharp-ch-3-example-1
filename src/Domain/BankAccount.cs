@@ -32,7 +32,7 @@ public class BankAccount : IBankAccount
     }
     public decimal Balance { get; private set; }
     public int NumberOfTransactions => _transactions.Count;
-    public Action<string, Transaction> OnTransactionAdded { get; set; }
+    public event Action<string, Transaction> OnTransactionAdded;
     #endregion
 
     #region Constructors
