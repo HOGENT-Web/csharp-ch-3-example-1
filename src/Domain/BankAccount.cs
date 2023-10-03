@@ -32,7 +32,6 @@ public class BankAccount : IBankAccount
     }
     public decimal Balance { get; private set; }
     public int NumberOfTransactions => _transactions.Count;
-    public event Action<string, Transaction> OnTransactionAdded;
     #endregion
 
     #region Constructors
@@ -47,7 +46,6 @@ public class BankAccount : IBankAccount
     private void AddTransaction(Transaction transaction)
     {
         _transactions.Add(transaction);
-        OnTransactionAdded?.Invoke(this.AccountNumber, transaction);
     }
     public void Deposit(decimal amount)
     {

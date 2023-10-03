@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 
 BankAccount account = new BankAccount("123-4567890-02");
-account.OnTransactionAdded += TransactionAddedHandler;
 Console.WriteLine($"AccountNumber: {account.AccountNumber} ");
 Console.WriteLine($"Balance: {account.Balance} ");
 account.Deposit(200M);
@@ -20,7 +19,6 @@ foreach (Transaction t in transactions)
 }
 
 BankAccount savingsAccount = new SavingsAccount("123-4567890-02", 0.05M);
-savingsAccount.OnTransactionAdded += TransactionAddedHandler;
 Console.WriteLine($"SavingsAccount : {savingsAccount}");
 savingsAccount.Deposit(200M);
 savingsAccount.Withdraw(100M);
@@ -28,8 +26,3 @@ Console.WriteLine($"Balance savingsaccount: {savingsAccount.Balance} ");
 (savingsAccount as SavingsAccount).AddInterest();
 Console.WriteLine($"Balance savingsaccount after interest: {savingsAccount.Balance} ");
 Console.WriteLine(savingsAccount); // implicit call to ToString()
-
-static void TransactionAddedHandler(string accountNumber, Transaction transaction)
-{
-    Console.WriteLine($"Transaction happened on account {accountNumber}: {transaction}");
-}
